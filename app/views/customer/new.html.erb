@@ -1,0 +1,50 @@
+<script type="text/javascript" src="https://js.stripe.com/v2/">
+  Stripe.setPublishableKey('pk_test_IRsXQo1hisg49pdLHC2BWeNr');
+</script>
+
+<div class="container">  
+  <table border="">
+    <tr><th><h4>Checkout Process</h4></th></tr>
+    <%= form_for @customer, :url => create_customer_customer_index_path, method: :post do |customer| %>
+      <%= hidden_field_tag :price ,params[:price]%>     
+      <tr><td><%= customer.text_field :name, placeholder: "Name" %></td></tr>
+      <tr><td><%= customer.text_field :address, placeholder: "Address" %></td></tr>
+      <tr><td><%= customer.text_field :contact_no, placeholder: "Phone" %></td></tr>
+      <tr><td><%= customer.text_field :email, placeholder: "Email" %></td></tr>
+      <tr><td><%= customer.text_field :card_no,:maxlength => 16, placeholder: "Card Number", class:"card_no"%></td></tr>
+      <tr><td><%= customer.text_field :cvv,:maxlength => 3, placeholder: "CVV Code" ,class:"cvv"%></td></tr>
+      <tr><td><%= customer.date_select :date,order: [:month, :year],start_year: Date.today.year , end_year: 20.years.from_now.year, placeholder: "MM-YYYY",class:'card-expiry-date' %></td></tr>
+      <tr><td align="center"><%= customer.submit "Pay " +params[:price],class:"stripeform"%></td></tr>
+    <%end%>
+  </table>
+</div>
+
+<script type="text/javascript">
+  function stripeResponseHandler(status, response) {
+ 
+    if (response.error) {
+        $(".payment-errors").text(response.error.message);
+    } 
+    else {
+        var form$ = $("#stripe-form");
+        var token = response['id'];
+        form$.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+        form$.get(0).submit();
+    }
+}
+ 
+$(document).ready(function() {
+  $(".stripeform").submit(function(event) {
+    $('.submit').attr("disabled", "disabled");
+ 
+    Stripe.createToken({
+        number: $('.card_no').val(),
+        cvc: $('.cvv').val(),
+        exp_date: $('.card-expiry-date').val()
+    }, stripeResponseHandler);
+ 
+    // prevent the form from submitting with the default action
+    return false;
+  });
+});
+</script>

@@ -1,0 +1,16 @@
+<h1>Welcome</h1>
+<% if current_user.present? %>
+<%=image_tag current_user.avatar.present? ? current_user.avatar: '/assets/default.png' ,:class=> "img-circular"%><br/><br/>
+<%=current_user.name%>
+<%end%>
+<div>
+  <%= link_to "Laptop price $600", new_customer_path(price: "$600"), style: "background-color: rgb(10, 45, 150); border-color: rgb(42, 45, 150);"%>
+  <%= link_to "Mobile price $400", new_customer_path(price: "$400"), style: "background-color: rgb(42, 45, 150); border-color: rgb(42, 45, 150);"%>
+  <%= link_to "Tablet price $500", new_charge_path(price: "$500"), style: "background-color: rgb(42, 45, 150); border-color: rgb(42, 45, 150);"%>
+</div><br /><br />
+<div>
+  <%= social_share_button_tag("My Home Page", :url => "http://mysite.com/foo") %>
+  <h4><%= link_to "verify number", new_phone_number_path %></h4>
+</div>
+
+
